@@ -3,14 +3,16 @@ const parser= require("../parser/parser");
 const helper= require("./helper");
 
 exports.from= (code)=>{
-    console.log("--------", "Tokens","--------");
-    let tokens= tokenizer(code);
-    console.log(tokens);
-    
+
+    let tokens = tokenizer(code);
+    console.log({tokens});
     try{
-        console.log("--------", "AST","--------");
+ 
         let ast= parser(tokens);
         console.log(ast);
+
+        // console.dir(ast, { depth: null });
+
         let result= {
             allDeclaredIsUsed: helper.allDeclaredIsUsed(ast),
             allUsedIsDeclared: helper.allUsedIsDeclared(ast),
