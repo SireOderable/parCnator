@@ -37,6 +37,10 @@ exports.searchArgs= (tokens, start)=>{
             let temp= searchString(tokens, i);
             args.push(temp);
             i=temp.end;
+        }else if(tokens[i].type==constTokens.symboleBlank) {
+            args.push(tokens[i])
+        }else if(tokens[i].type==constTokens.symboleVirgule){
+            args.push(tokens[i])
         }
     }
     if(!findEnd) throw constParser.errorMissingCloseParenthesis;
