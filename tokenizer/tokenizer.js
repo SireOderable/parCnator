@@ -2,14 +2,23 @@
 const helper = require("./helper");
 const constTokens = require("./constants");
 
+function isNumeric(n) {
+  return !isNaN(parseFloat(n)) && isFinite(n);
+}
+
 module.exports = function (code) {
+
   code = helper.replaceSpecialsChars(code);
-  if(code.charAt(0) == ' ') code = code.slice(1, -1);
+
+  if(code.charAt(0) == ' ') code = code.slice(1);
+  if(code.charAt(code.length - 1) == ' ') code = code.slice(0, -1);
+  
   var _tokens = code.split(/[\t\f\v ]+/);
+
   var tokens = []
   for (var i = 0; i < _tokens.length; i++) {
     var t = _tokens[i]
-    if (t.length != '' || isNaN(t)) {
+    if (!isNumeric(t)) {
       let typeChars = helper.checkChars(t);
       if (typeChars) {
         tokens.push({ type: typeChars })

@@ -40,10 +40,12 @@ function objectMethodCall(tokens, start) {
 }
 
 function variableDeclaration(tokens, start) {
+    // console.log(tokens[start]);
+    next = skipBlank(tokens, start + 1, 1);
+    // console.log(tokens[next]);
+    if (tokens[next].type != constTokens.typeWord) throw constParser.errorMissingWord;
 
-    if (tokens[start + 1].type != constTokens.typeWord) throw constParser.errorMissingWord;
-
-    let variableName = tokens[start + 1].value;
+    let variableName = tokens[next].value;
     return { type: constParser.expressionDeclaration, variableName: variableName };
 }
 
@@ -60,8 +62,8 @@ function variableAffectation(tokens, start) {
 //    console.log(tokens[next]);
     
     if (tokens[next].type == constTokens.typeNumber) {
-        variableValue = tokens[next].value;
-        console.log(variableValue);
+        variableValue = tokens[next];
+        // console.log(variableValue);
     } else if (tokens[next].type == constTokens.symboleQuotationMark) {
         variableValue = helper.searchString(tokens, next);
     }

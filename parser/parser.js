@@ -12,29 +12,31 @@ function skipBlank(tokens, start, step) {
 
 module.exports = (tokens) => {
     let AST = [];
-    // console.log(tokens);
     for (let i = 0; i < tokens.length; i++) {
-        console.log(tokens[i]);
+        
         let expression = null;
-
+        console.log({token_current: tokens[i]});
         if (tokens[i].type == constTokens.typeWord && constParser.declarationVariable.indexOf(tokens[i].value) != -1) {
+            // console.log("expressionDeclaration =>");
             expression = factory.create(constParser.expressionDeclaration, tokens, i);
             i++;
- 
         } else if (tokens[i].type == constTokens.symboleEqual) {
             expression = factory.create(constParser.expressionAffectation, tokens, i);
-            console.log(expression);
+            // console.log("expressionAffectation =>");
+            // console.log(expression);
             if (expression.variableValue.type == constTokens.typeNumber) {
+                console.log();
                 i++;
             } else {
                 i = expression.variableValue.end;
             }
 
         } else if (i < tokens.length - 1 && tokens[i].type == constTokens.typeWord) {
+            // console.log("expressionMethodCall =>");
             const getPoint = skipBlank(tokens, i + 1, 1);
             if (tokens[getPoint].type == constTokens.symbolePoint) {
                 expression = factory.create(constParser.expressionMethodCall, tokens, i);
-                console.log(expression);
+                // console.log(expression);
                 i = expression.end;
             }
             
