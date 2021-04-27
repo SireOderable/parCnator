@@ -31,6 +31,6 @@ module.exports = function (code) {
   if (tokens.length < 1) {
     throw constTokens.errorNoTokenFound;
   }
-
+  console.dir(tokens, { depth: null });
   return tokens
 }

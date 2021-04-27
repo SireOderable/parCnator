@@ -4,7 +4,7 @@ exports.typeString= 'string';
 
 exports.expressionDeclaration= "variableDeclaration";
 exports.expressionAffectation= "variableAffectation";
-exports.expressionMethodCall= "objectMethodCall";
+exports.expressionFuncCall= "funcCall";
 
 exports.declarationVariable = ["var","let", "const"];
 

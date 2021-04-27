@@ -11,7 +11,6 @@ function skipBlank(tokens, start, step) {
 
 
 module.exports = (tokens) => {
-    console.log(tokens);
     let AST = [];
     for (let i = 0; i < tokens.length; i++) {
         
@@ -22,19 +21,16 @@ module.exports = (tokens) => {
         } else if (tokens[i].type == constTokens.symboleEqual) {
             expression = factory.create(constParser.expressionAffectation, tokens, i);
             if (expression.variableValue.type == constTokens.typeNumber) {
-                console.log();
                 i++;
             } else {
                 i = expression.variableValue.end;
             }
-
         } else if (i < tokens.length - 1 && tokens[i].type == constTokens.typeWord) {
             const getPoint = skipBlank(tokens, i + 1, 1);
-            if (tokens[getPoint].type == constTokens.symbolePoint) {
-                expression = factory.create(constParser.expressionMethodCall, tokens, i);
+            if (tokens[getPoint].type == constTokens.symboleOpenParenthese) {
+                expression = factory.create(constParser.expressionFuncCall, tokens, i);
                 i = expression.end;
             }
-            
         }
         if (expression) {
             AST.push(expression);
@@ -42,5 +38,6 @@ module.exports = (tokens) => {
             AST.push(tokens[i]);
         }
     }
+    console.dir(AST, { depth: null });
     return AST;
 }
