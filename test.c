@@ -1,2 +1,4 @@
-      printf  (    "Hello world"   )    ;
-printf("%s", avions);
+int main(int argc, char *argv[])
+{
+    return 0;
+}
