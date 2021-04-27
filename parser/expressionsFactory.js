@@ -22,10 +22,11 @@ exports.create = (type, tokens, start) => {
 }
 
 function objectMethodCall(tokens, start) {
-    let objectName = tokens[start].value;
-    let next = skipBlank(tokens, start + 2, 1); 
+    let objectName = tokens[start].value ;
+    let goToPoint = skipBlank(tokens, start + 1, 1); 
+    let next = skipBlank(tokens, goToPoint + 1 ,1);
+    // console.log(tokens[next].type);
     if (tokens[next].type != constTokens.typeWord) throw constParser.errorMissingWord;
-    // if (tokens[start + 2].type != constTokens.typeWord) throw constParser.errorMissingWord;
     let methodName = tokens[next].value;
     next = skipBlank(tokens, next+1, 1)
     let arguments = helper.searchArgs(tokens, next);
@@ -39,19 +40,30 @@ function objectMethodCall(tokens, start) {
 }
 
 function variableDeclaration(tokens, start) {
+
     if (tokens[start + 1].type != constTokens.typeWord) throw constParser.errorMissingWord;
+
     let variableName = tokens[start + 1].value;
     return { type: constParser.expressionDeclaration, variableName: variableName };
 }
 
 function variableAffectation(tokens, start) {
-    if (tokens[start - 1].type != constTokens.typeWord) throw constParser.errorMissingWord;
-    let variableName = tokens[start - 1].value;
+    // console.log(tokens[start]);
+    const previous = skipBlank(tokens, start - 1, -1)
+    // console.log(tokens[previous]);
+    if (tokens[previous].type != constTokens.typeWord) throw constParser.errorMissingWord;
+    
+    let variableName = tokens[previous].value;
+
     let variableValue = null;
-    if (tokens[start + 1].type == constTokens.typeNumber) {
-        variableValue = tokens[start + 1];
-    } else if (tokens[start + 1].type == constTokens.symboleQuotationMark) {
-        variableValue = helper.searchString(tokens, start + 1);
+    let next = skipBlank(tokens, start + 1, 1)
+//    console.log(tokens[next]);
+    
+    if (tokens[next].type == constTokens.typeNumber) {
+        variableValue = tokens[next].value;
+        console.log(variableValue);
+    } else if (tokens[next].type == constTokens.symboleQuotationMark) {
+        variableValue = helper.searchString(tokens, next);
     }
     return { type: constParser.expressionAffectation, variableName: variableName, variableValue: variableValue };
 }

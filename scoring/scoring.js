@@ -5,11 +5,10 @@ const helper= require("./helper");
 exports.from= (code)=>{
 
     let tokens = tokenizer(code);
-    console.log({tokens});
     try{
  
         let ast= parser(tokens);
-        console.log(ast);
+        // console.log(ast);
 
         // console.dir(ast, { depth: null });
 

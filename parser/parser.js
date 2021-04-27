@@ -12,29 +12,32 @@ function skipBlank(tokens, start, step) {
 
 module.exports = (tokens) => {
     let AST = [];
+    // console.log(tokens);
     for (let i = 0; i < tokens.length; i++) {
+        console.log(tokens[i]);
         let expression = null;
-        //déclaration de variable
+
         if (tokens[i].type == constTokens.typeWord && constParser.declarationVariable.indexOf(tokens[i].value) != -1) {
             expression = factory.create(constParser.expressionDeclaration, tokens, i);
             i++;
-            //utilisation symbole égale
+ 
         } else if (tokens[i].type == constTokens.symboleEqual) {
             expression = factory.create(constParser.expressionAffectation, tokens, i);
-            //si affectation nombre
+            console.log(expression);
             if (expression.variableValue.type == constTokens.typeNumber) {
                 i++;
-                //si affectation string on reprend l'analyse après la fermeture des guillements.
             } else {
                 i = expression.variableValue.end;
             }
-            //utilisation de methode
+
         } else if (i < tokens.length - 1 && tokens[i].type == constTokens.typeWord) {
-            i = skipBlank(tokens, i + 1, 1);
-            if (tokens[i].type == constTokens.symbolePoint) {
+            const getPoint = skipBlank(tokens, i + 1, 1);
+            if (tokens[getPoint].type == constTokens.symbolePoint) {
                 expression = factory.create(constParser.expressionMethodCall, tokens, i);
+                console.log(expression);
                 i = expression.end;
             }
+            
         }
         if (expression) {
             AST.push(expression);
