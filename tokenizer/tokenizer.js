@@ -7,7 +7,6 @@ function isNumeric(n) {
 }
 
 module.exports = function (code) {
-
   code = helper.replaceSpecialsChars(code);
 
   if(code.charAt(0) == ' ') code = code.slice(1);
@@ -32,5 +31,6 @@ module.exports = function (code) {
   if (tokens.length < 1) {
     throw constTokens.errorNoTokenFound;
   }
+
   return tokens
 }
