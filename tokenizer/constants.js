@@ -10,6 +10,7 @@ exports.specialChars = {
     closeParenthese:  { regRule: /\)/g,   value:'"' },
     openBrackets:     { regRule: /{/g,    value:'{' },
     closeBrackets:    { regRule: /}/g,    value:'}' },
+    library:          { regRule: /#[a-zA-z0-9]+/g,    value:'#include' },
 };
 
 exports.symboleEqual            = "equal";
@@ -21,9 +22,11 @@ exports.symboleCloseParenthese  = "closeParenthese";
 exports.symboleOpenBrackets     = "openBrackets";
 exports.symboleCloseBrackets    = "closeBrackets";
 exports.symboleBlank            = "blank";
+exports.symboleLibrary          = "library";
 
 exports.typeNumber  = "number";
 exports.typeWord    = "word";
 
 exports.errorNoTokenFound = 'No Tokens Found.';
 
+// *include* <stdio.h> *newLine*

@@ -12,10 +12,12 @@ function skipBlank(tokens, start, step) {
 
 module.exports = (tokens) => {
     let AST = [];
+    // console.log(tokens);
     for (let i = 0; i < tokens.length; i++) {
-        
         let expression = null;
-        if (tokens[i].type == constTokens.typeWord && constParser.declarationVariable.indexOf(tokens[i].value) != -1) {
+        if(tokens[i].type == constTokens.symboleLibrary) {
+            console.log("ècektubaise");
+        } else if (tokens[i].type == constTokens.typeWord && constParser.declarationVariable.indexOf(tokens[i].value) != -1) {
             expression = factory.create(constParser.expressionDeclaration, tokens, i);
             i++;
         } else if (tokens[i].type == constTokens.symboleEqual) {
@@ -38,6 +40,6 @@ module.exports = (tokens) => {
             AST.push(tokens[i]);
         }
     }
-    console.dir(AST, { depth: null });
+    // console.dir(AST, { depth: null });
     return AST;
 }
