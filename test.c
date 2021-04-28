@@ -1,8 +1,8 @@
 #include <stdio.h>
 
-int main()
+int main(int argc, char** argv)
 {
-    char str[] = "Hello world !";
+    char** str = "Hello world !";
     printf("%s\n", str);
     return 0;
 }

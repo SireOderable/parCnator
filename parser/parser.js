@@ -12,36 +12,36 @@ function skipBlank(tokens, start, step) {
 
 module.exports = (tokens) => {
     let AST = [];
-    // console.log(tokens);
+   
     for (let i = 0; i < tokens.length; i++) {
+        // console.log(tokens[i]);
         let expression = null;
-       
+        // Import
         if(tokens[i].type == constTokens.symboleInclude) {
             expression = factory.create(constParser.expressionImport, tokens, i);
             i = expression.end;
-        } else if (tokens[i].type == constTokens.typeWord && constParser.declarationVariable.indexOf(tokens[i].value) != -1) {
-            expression = factory.create(constParser.expressionDeclaration, tokens, i);
-            i++;
-        } else if (tokens[i].type == constTokens.symboleEqual) {
-            expression = factory.create(constParser.expressionAffectation, tokens, i);
-            if (expression.variableValue.type == constTokens.typeNumber) {
-                i++;
+        } 
+        // Words
+        if (tokens[i].type == constTokens.typeWord) {
+            
+            const match = tokens[i].value.match(/(\b(char[*]*)|\b(int)\b|\bfloat\b)/gi)
+            if(match != null && match.length > 0) {
+                // Déclaration
+                // a v b d a 
+                expression = factory.create(constParser.expressionDeclaration, tokens, i);
+           
+                break;
             } else {
-                i = expression.variableValue.end;
-            }
-        } else if (i < tokens.length - 1 && tokens[i].type == constTokens.typeWord) {
-            const getPoint = skipBlank(tokens, i + 1, 1);
-            if (tokens[getPoint].type == constTokens.symboleOpenParenthese) {
-                expression = factory.create(constParser.expressionFuncCall, tokens, i);
-                i = expression.end;
-            }
+                // Utilisation de fonction ou variable
+            }  
         }
+
         if (expression) {
             AST.push(expression);
         } else {
             AST.push(tokens[i]);
         }
     }
-    console.dir(AST, { depth: null });
+    // console.dir(AST, { depth: null });
     return AST;
 }

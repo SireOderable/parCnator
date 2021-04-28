@@ -9,6 +9,8 @@ exports.specialChars = {
     closeParenthese:  { regRule: /\)/g,   value:'"' },
     openBrackets:     { regRule: /{/g,    value:'{' },
     closeBrackets:    { regRule: /}/g,    value:'}' },
+    openHook:         { regRule: /\[/g,    value:'[' },
+    closeHook:        { regRule: /\]/g,    value:']' },
     include:          { regRule: /#[a-zA-z0-9]+/g,    value:'include' },
 };
 
@@ -21,6 +23,7 @@ exports.symboleOpenBrackets     = "openBrackets";
 exports.symboleCloseBrackets    = "closeBrackets";
 exports.symboleBlank            = "blank";
 exports.symboleInclude          = "include";
+exports.symboleNewLine          = "newLine";
 
 exports.typeNumber  = "number";
 exports.typeWord    = "word";
