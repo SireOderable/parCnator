@@ -13,14 +13,16 @@ exports.from= (code)=>{
             allDeclaredIsUsed: helper.allDeclaredIsUsed(ast),
             allUsedIsDeclared: helper.allUsedIsDeclared(ast),
             allExpressionFinished: helper.allExpressionFinished(ast),
-            numberLine: helper.numberLine(ast),
-            indentation: helper.indentation(ast)
+            checkLinesInFile: helper.checkLinesInFile(ast),
+            indentation: helper.indentation(ast),
+            checkNewLineAfterEndInstruct: helper.checkNewLineAfterEndInstruct(ast)
         };
         return {score: result.allDeclaredIsUsed+
                        result.allUsedIsDeclared+
                        result.allExpressionFinished+
+                       result.checkLinesInFile+
                        result.indentation+
-                       result.numberLine,
+                       result.checkNewLineAfterEndInstruct,
                 details: result
                 }
     }catch(e){
