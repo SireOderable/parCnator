@@ -1,14 +1,7 @@
+
 const constTokens = require("../tokenizer/constants");
 const constParser = require("./constants");
 const factory = require("./expressionsFactory");
-
-function skipBlank(tokens, start, step) {
-    if (tokens[start].type == constTokens.symboleBlank) {
-        return skipBlank(tokens, start + step, step);
-    }
-    return start;
-}
-
 
 module.exports = (tokens) => {
     let AST = [];

@@ -1,24 +1,7 @@
+const parser = require("./parser");
 const constTokens = require("../tokenizer/constants");
 const constParser = require("./constants");
 const helper = require("./helper");
-
-
-function skipBlank(tokens, start, step) {
-    if(tokens[start].type == constTokens.symboleBlank) {
-        return skipBlank(tokens, start + step, step);
-    }
-    return start;
-}
-
-function getIndent(tokens, start) {
-    if(tokens[start - 1].type == constTokens.symboleNewLine ) return start;
-    let res = [];
-    let i = 0;
-    while(tokens[start - i].type != constTokens.symboleNewLine) {
-        i++;
-    }
-    return start-i+1;
-}
 
 exports.create = (type, tokens, start) => {
     switch (type) {
@@ -30,8 +13,8 @@ exports.create = (type, tokens, start) => {
 }
 
 function declaration(tokens, start) {
-    let next = skipBlank(tokens, start + 1, 1);
-    next = skipBlank(tokens, next + 1, 1);
+    let next = helper.skipBlank(tokens, start + 1, 1);
+    next = helper.skipBlank(tokens, next + 1, 1);
     const separator = tokens[next];
     if (separator.type == constTokens.symboleOpenParenthese) {
         return declarationFunction(tokens, start);
@@ -42,44 +25,66 @@ function declaration(tokens, start) {
 
 // int main(int argc, char** argv)
 // int main(int argc)
+// int main()
 
-//  [ {*blank*}, {value_type : int}, {word : "argc"}, {*blank*} ]
+// arguments : [
+//     [ {*blank*}, {word : int}, {word : "argc"}, {*blank*} ],
+//     [ {*blank * }, {word : char**}, {word : "argv"}, {*blank*} ]
+// ]
+
 function getArgs(tokens, openPar) {
     let args = [];
-    let nextArg = skipBlank(tokens, openPar + 1, 1);
-    if(tokens[nextArg].type == constTokens.symboleCloseParenthese) return args;
+    let nextArg = helper.skipBlank(tokens, openPar + 1, 1);
+    if(tokens[nextArg].type == constTokens.symboleCloseParenthese) return {args: args, end: nextArg };
 
     while(tokens[nextArg].type != constTokens.symboleCloseParenthese) {
-        const typeArg = tokens[nextArg].value;
+        const typeArg = tokens[nextArg].value;                  // le type
         const match = typeArg.match(/(\b(char[*]*)|\b(int)\b|\bfloat\b)/gi);
         if(match != null && match.length > 0) {
-            const nameArg = tokens[skipBlank(tokens, nextArg + 1, 1)].value;
+            const indexName = helper.skipBlank(tokens, nextArg + 1, 1); // !!!index!!!   du nom
+            const separator = helper.skipBlank(tokens, indexName+1, 1);
+            if(tokens[separator].type != constTokens.symboleVirgule) {
+                args.push(tokens.slice(nextArg, separator));
+                break;
+            } 
+            
+            args.push(tokens.slice(nextArg, separator));
+            nextArg = helper.skipBlank(tokens, separator + 1, 1);
         } else throw constParser.errorDeclaration;
-
-        constParser.errorDeclaration;
-        break;
     }
-    
 
+    return {
+        args: args,
+        end: nextArg
+    };
 }
+
 
 // int main(int argc, char** argv)
 function declarationFunction(tokens, start) {
-    const indent = getIndent(tokens, start);
-    const nextType = skipBlank(tokens, start + 1, 1);
-    const nameFunc = skipBlank(tokens, start + 1, 1);
-    const openPar = skipBlank(tokens, nameFunc + 1, 1);
-    getArgs(tokens, openPar);
-    // console.dir({
-    //     type: "",
-    //     header: {
-    //         return_type: tokens.slice(indent, nextType),
-    //         name: tokens.slice(nextType, openPar),
-    //         arguments: []
-    //     },
-    //     body: [],
-    //     end: 0
-    // }, { depth: null });
+    const indent = helper.getIndent(tokens, start);
+    const nextType = helper.skipBlank(tokens, start + 1, 1);
+    const nameFunc = helper.skipBlank(tokens, start + 1, 1);
+    const openPar = helper.skipBlank(tokens, nameFunc + 1, 1);
+    const args = getArgs(tokens, openPar);
+
+    const closeBracket = tokens.findIndex(element => element.type == constTokens.symboleCloseBrackets);
+    // console.log(parser());
+    /**
+     * args.end -> 
+     */
+
+    // console.log(getArgs(tokens, openPar));
+//     console.dir({
+//         type: "",
+//         header: {
+//             return_type: tokens.slice(indent, nextType),
+//             name: tokens.slice(nextType, openPar),
+//             arguments: args.args,
+//         },
+//         body:  {},
+//         end: 0
+//     }, { depth: null });
 }
 
 function declarationVariable(tokens, start) {
@@ -88,7 +93,7 @@ function declarationVariable(tokens, start) {
 }
 
 function importLibrary(tokens, start) {
-    let next = skipBlank(tokens, start + 1, 1);
+    let next = helper.skipBlank(tokens, start + 1, 1);
 
     if (tokens[next].type != constTokens.typeWord) throw constParser.errorImport;
     const lib = tokens[next].value.match(/<[a-zA-z0-9]+.h>/g);

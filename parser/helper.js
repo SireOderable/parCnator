@@ -46,3 +46,20 @@ exports.searchArgs= (tokens, start)=>{
     if(!findEnd) throw constParser.errorMissingCloseParenthesis;
     return {args: args, end: end};
 }
+
+exports.skipBlank = (tokens, start, step) => {
+    if(tokens[start].type == constTokens.symboleBlank) {
+        return this.skipBlank(tokens, start + step, step);
+    }
+    return start;
+}
+
+exports.getIndent = (tokens, start) => {
+    if(tokens[start - 1].type == constTokens.symboleNewLine ) return start;
+    let res = [];
+    let i = 0;
+    while(tokens[start - i].type != constTokens.symboleNewLine) {
+        i++;
+    }
+    return start-i+1;
+}
