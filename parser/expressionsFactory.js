@@ -18,7 +18,29 @@ exports.create = (type, tokens, start) => {
             return variableDeclaration(tokens, start);
         case constParser.expressionAffectation:
             return variableAffectation(tokens, start);
+        case constParser.expressionImport:
+            return importLibrary(tokens, start);
     }
+}
+
+function importLibrary(tokens, start) {
+    let next = skipBlank(tokens, start + 1, 1);
+
+    if (tokens[next].type != constTokens.typeWord) throw constParser.errorImport;
+    const lib = tokens[next].value.match(/<[a-zA-z0-9]+.h>/g);
+    if(lib.length == 0) throw constParser.errorImport;
+
+    let body = [{type: constTokens.symboleInclude}];
+    for (let i = 0; i < next - start - 1; i++) {
+        body.push({type: constTokens.symboleBlank})
+    }
+    body.push({type: constTokens.typeWord, value: lib[0]})
+
+    return {
+        type: constParser.expressionImport,
+        end: next,
+        body
+    }   
 }
 
 function objectMethodCall(tokens, start) {
@@ -36,7 +58,7 @@ function objectMethodCall(tokens, start) {
 
 function variableDeclaration(tokens, start) {
     next = skipBlank(tokens, start + 1, 1);
-    if (tokens[next].type != constTokens.typeWord) throw constParser.errorMissingWord;
+    
 
     let variableName = tokens[next].value;
     return { type: constParser.expressionDeclaration, variableName: variableName };

@@ -15,8 +15,10 @@ module.exports = (tokens) => {
     // console.log(tokens);
     for (let i = 0; i < tokens.length; i++) {
         let expression = null;
-        if(tokens[i].type == constTokens.symboleLibrary) {
-            console.log("ècektubaise");
+       
+        if(tokens[i].type == constTokens.symboleInclude) {
+            expression = factory.create(constParser.expressionImport, tokens, i);
+            i = expression.end;
         } else if (tokens[i].type == constTokens.typeWord && constParser.declarationVariable.indexOf(tokens[i].value) != -1) {
             expression = factory.create(constParser.expressionDeclaration, tokens, i);
             i++;
@@ -40,6 +42,6 @@ module.exports = (tokens) => {
             AST.push(tokens[i]);
         }
     }
-    // console.dir(AST, { depth: null });
+    console.dir(AST, { depth: null });
     return AST;
 }
