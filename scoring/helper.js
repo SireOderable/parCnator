@@ -10,10 +10,10 @@ Object.size = function (obj) {
     return size;
 };
 
-function printAST(ast){
+function printAST(ast) {
     console.log("----- AST -----");
     for (const [key, value] of Object.entries(ast)) {
-        console.log(Object.size( value ), value);
+        console.log(Object.size(value), value);
     }
     console.log("---------------");
 
@@ -26,13 +26,13 @@ exports.checkLinesInFile = (ast) => {
 
     const authorizedLineNumber = 200;
 
-    const linesCounter = _.filter(ast, { type: 'newLine' }).length +1;
-    if (linesCounter>authorizedLineNumber){
-        console.log( "checkLinesInFile -> dépassement :", linesCounter-authorizedLineNumber );
-    } else {
-        console.log( "checkLinesInFile -> OK");
+    const linesCounter = _.filter(ast, { type: 'newLine' }).length + 1;
+    if (linesCounter > authorizedLineNumber) {
+        console.log("checkLinesInFile -> dépassement :", linesCounter - authorizedLineNumber);
+        return 0;
     }
-    return linesCounter<=authorizedLineNumber;
+    console.log("checkLinesInFile -> OK");
+    return 1;
 }
 
 //==============================================================================
@@ -40,25 +40,25 @@ exports.checkLinesInFile = (ast) => {
 exports.checkNewLineAfterEndInstruct = (ast) => {
     // TODO : recherche sur les fils
     // TODO : exclure 'for (var i=0; i<10; i++){'
-    
+
     var cptFalse = 0;
 
-    const astLength = Object.size( ast );
-    for (var i=0; i<astLength-1; i++) {
-        if ( ast[i].type === "endInstruct" ){
-            if (ast[i+1].type!=="newLine" ){
+    const astLength = Object.size(ast);
+    for (var i = 0; i < astLength - 1; i++) {
+        if (ast[i].type === "endInstruct") {
+            if (ast[i + 1].type !== "newLine") {
                 cptFalse++;
             }
         }
     }
 
-    if (cptFalse>0){
-        console.log( "checkNewLineAfterEndInstruct -> ", cptFalse, " errors" );
-    } else {
-        console.log( "checkNewLineAfterEndInstruct -> OK");
+    if (cptFalse > 0) {
+        console.log("checkNewLineAfterEndInstruct -> ", cptFalse, " errors");
+        return 0;
     }
     
-    return cptFalse==0;
+    console.log("checkNewLineAfterEndInstruct -> OK");
+    return 1;
 }
 
 exports.allDeclaredIsUsed = (ast) => {
