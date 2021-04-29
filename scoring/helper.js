@@ -50,7 +50,7 @@ exports.checkLinesInFuncions = (ast) => {
         if (value.type === "declarationFunction") {
             var linesCounter = _.filter(value.body, { type: 'newLine' }).length - 1;    // -1 pour l'accolade ouvrante
             if (linesCounter > maxLignesAuthorise) {
-                console.log("checkLinesInFuncions -> dépassement");
+                console.log("checkLinesInFuncions -> Err");
                 return 1;
             }
         }
