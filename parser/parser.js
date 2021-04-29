@@ -23,7 +23,8 @@ const parser = (tokens) => {
                 } 
                 i = expression.end;
             } else {
-                i++;
+                expression = factory.create(constParser.expressionFunctionCall, tokens, i);
+                i = expression.end;
             }  
         }
 

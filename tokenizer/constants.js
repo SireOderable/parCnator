@@ -24,6 +24,7 @@ exports.symboleCloseBrackets    = "closeBrackets";
 exports.symboleBlank            = "blank";
 exports.symboleInclude          = "include";
 exports.symboleNewLine          = "newLine";
+exports.symboleEndInstruct      = "endInstruct";
 
 exports.typeNumber  = "int";
 exports.typeWord    = "word";

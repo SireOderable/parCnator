@@ -9,7 +9,40 @@ exports.create = (type, tokens, start) => {
             return importLibrary(tokens, start);
         case constParser.expressionDeclaration:
             return declaration(tokens, start);
+        case constParser.expressionFunctionCall:
+            return call(tokens, start);
     }
+}
+
+function call(tokens, start) {
+    const nameCall = tokens[start];
+    let nextIndex = next(tokens, start);
+    if(tokens[nextIndex].type == constTokens.symboleOpenParenthese) {
+        return callFunction(tokens, start);
+    } else if (tokens[nextIndex].type == constTokens.symboleEqual) {
+        return callVariable(tokens, start);
+    } else throw constParser.errorCall
+}
+
+function callFunction(tokens, start) {
+    const callTo = tokens[start].value;
+    let indexParam = next(tokens, next(tokens, start));
+    while(tokens[indexParam] != undefined && tokens[indexParam].type != constTokens.symboleCloseParenthese ) {
+        if(tokens[indexParam].type != constTokens.symboleEndInstruct ) {
+            indexParam++;
+        } else throw constParser.errorCall
+    }
+    const end = next(tokens, next(tokens, indexParam)) + 1;
+    return {
+        type: constParser.expressionFunctionCall,
+        name: callTo,
+        body: tokens.slice(helper.getIndent(tokens, start), end),
+        end: end
+    };
+}
+
+function callVariable(tokens, start) {
+    return {toot: "toto"};
 }
 
 function declaration(tokens, start) {

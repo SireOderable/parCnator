@@ -18,3 +18,4 @@ exports.errorMissingQuotationMark="Error: missing quotation mark";
 exports.errorMissingWord="Error: missing a word for valid expression";
 exports.errorImport="Error: missing import"
 exports.errorDeclaration="Error: invalid declaration";
+exports.errorCall="Error: invalid call";

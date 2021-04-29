@@ -8,7 +8,7 @@ exports.from= (code)=>{
 
     try{
         let ast= parser(tokens);
-        
+        console.dir(ast, { depth: null });
         let result= {
             allDeclaredIsUsed: helper.allDeclaredIsUsed(ast),
             allUsedIsDeclared: helper.allUsedIsDeclared(ast),
