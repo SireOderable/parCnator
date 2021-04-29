@@ -16,7 +16,7 @@ exports.from = (code) => {
             checkLinesInFile: helper.checkLinesInFile(ast),
             checkLinesInFuncions: helper.checkLinesInFuncions(ast),
             indentation: helper.indentation(ast),
-            checkNewLineAfterEndInstruct: helper.checkNewLineAfterEndInstruct(ast),
+            checkNewLineAfterEndInstruct: helper.checkNewLineAfterEndInstruct(tokens),
             checkBlanks: helper.checkBlanks(tokens)
         };
         return {
