@@ -54,16 +54,13 @@ exports.checkLinesInFuncions = (ast) => {
 
 //==============================================================================
 // check que chaque `;` est suivi par un retour à la ligne
-exports.checkNewLineAfterEndInstruct = (ast) => {
-    // TODO : recherche sur les fils
+exports.checkNewLineAfterEndInstruct = (tokens) => {
     // TODO : exclure 'for (var i=0; i<10; i++){'
-
     var cptFalse = 0;
-
-    const astLength = Object.size(ast);
-    for (var i = 0; i < astLength - 1; i++) {
-        if (ast[i].type === "endInstruct") {
-            if (ast[i + 1].type !== "newLine") {
+    
+    for (var i = 0; i < tokens.length - 1; i++) {
+        if (tokens[i].type === "endInstruct") {
+            if (tokens[i + 1].type !== "newLine") {
                 cptFalse++;
             }
         }
@@ -77,6 +74,7 @@ exports.checkNewLineAfterEndInstruct = (ast) => {
     console.log("checkNewLineAfterEndInstruct -> OK");
     return 1;
 }
+
 
 exports.checkBlanks = (tokens) => {
     return 1;
