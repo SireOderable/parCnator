@@ -1,31 +1,29 @@
 
+const { slice } = require("lodash");
 const constTokens = require("../tokenizer/constants");
 const constParser = require("./constants");
 const factory = require("./expressionsFactory");
 
-module.exports = (tokens) => {
+const parser = (tokens) => {
     let AST = [];
    
     for (let i = 0; i < tokens.length; i++) {
-        // console.log(tokens[i]);
         let expression = null;
         // Import
         if(tokens[i].type == constTokens.symboleInclude) {
             expression = factory.create(constParser.expressionImport, tokens, i);
             i = expression.end;
-        } 
-        // Words
-        if (tokens[i].type == constTokens.typeWord) {
+        } else if (tokens[i].type == constTokens.typeWord) {
             
             const match = tokens[i].value.match(/(\b(char[*]*)|\b(int)\b|\bfloat\b)/gi)
             if(match != null && match.length > 0) {
-                // Déclaration
-                // a v b d a 
-                expression = factory.create(constParser.expressionDeclaration, tokens, i);
-           
-                break;
+                expression = factory.create(constParser.expressionDeclaration, tokens, i);    
+                if(expression.type == constParser.expressionDeclarationFunction) {
+                    expression.body = parser(tokens.slice(expression.start, expression.end));
+                } 
+                i = expression.end;
             } else {
-                // Utilisation de fonction ou variable
+                i++;
             }  
         }
 
@@ -35,6 +33,7 @@ module.exports = (tokens) => {
             AST.push(tokens[i]);
         }
     }
-    // console.dir(AST, { depth: null });
     return AST;
 }
+
+module.exports = parser;

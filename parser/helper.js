@@ -15,7 +15,10 @@ const searchString= (tokens, start)=>{
         }
     }
     if(!findend) throw constParser.errorMissingQuotationMark;
-    return {type:constParser.typeString, value: string.join(' '), start: start, end: end};
+    return {
+        value: string.join(' '),
+        end: end
+    };
 }
 exports.searchString = searchString;
 
@@ -56,10 +59,18 @@ exports.skipBlank = (tokens, start, step) => {
 
 exports.getIndent = (tokens, start) => {
     if(tokens[start - 1].type == constTokens.symboleNewLine ) return start;
-    let res = [];
     let i = 0;
     while(tokens[start - i].type != constTokens.symboleNewLine) {
         i++;
     }
     return start-i+1;
+}
+
+
+exports.nextNewLine = (tokens, start) => {
+    let i = start;
+    while(tokens[start].type != constTokens.symboleNewLine && i < tokens.length) {
+        i++;
+    }
+    return i;
 }

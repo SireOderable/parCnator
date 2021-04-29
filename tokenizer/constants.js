@@ -25,7 +25,7 @@ exports.symboleBlank            = "blank";
 exports.symboleInclude          = "include";
 exports.symboleNewLine          = "newLine";
 
-exports.typeNumber  = "number";
+exports.typeNumber  = "int";
 exports.typeWord    = "word";
 exports.typeInt     = "int";
 exports.typeChar    = "char";

@@ -3,6 +3,8 @@ exports.typeFloat="float";
 exports.typeChar="char";
 
 exports.expressionDeclaration="declaration";
+exports.expressionDeclarationFunction="declarationFunction";
+exports.expressionDeclarationVariable="declarationVariable";
 exports.expressionAffectation="variableAffectation";
 exports.expressionFunctionCall="functionCall";
 exports.expressionImport="import";
