@@ -94,6 +94,16 @@ exports.allExpressionFinished = (ast) => {
     return 1;
 }
 
-exports.indentation = (ast) => {
-    return 1;
+const tabline = 4;
+exports.indentation = (ast, proff=0) => {
+    let score = 0;
+    for (let i = 0; i < ast.length; i++) {
+        const token = ast[i];
+        if(token.type == "declarationFunction") {
+            score = this.indentation(ast[i].body ,proff+1)
+        } else {
+
+        }
+    }
+    return score;
 }
