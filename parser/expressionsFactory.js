@@ -113,16 +113,62 @@ function declarationVariable(tokens, start) {
     let value = null;
     let type = null;
     let end = null;
-    if (tokens[indexValue].type == constTokens.typeNumber) {
-        value = tokens[indexValue].value;
-        type = constTokens.typeNumber;
-        end = next(tokens, indexValue);
-    } else if (tokens[indexValue].type == constTokens.symboleQuotationMark) {
-        const objectString = helper.searchString(tokens, indexValue);
-        value = objectString.value;
-        type = constTokens.typeChar;
-        end = next(tokens, objectString.end);
-    } else throw constParser.errorDeclaration;
+
+
+    const match = tokens[start].value.match(/(\b(char\*)|\b(int)\b|\bfloat\b)/gi);
+    if(match == null)
+    {
+        throw constParser.errorDeclaration;
+    }
+    
+    switch (match[0])
+    {
+        case "char*":
+            if(tokens[indexValue].type == constTokens.symboleQuotationMark) {
+                const objectString = helper.searchString(tokens, indexValue);
+                value = objectString.value;
+                type = constTokens.typeChar;
+                end = next(tokens, objectString.end);
+            }
+            else 
+            {
+                throw constParser.errorMissingQuotationMark;    
+            }
+            break;
+        
+        case "int":
+            console.log("INT");
+            if(tokens[indexValue].type == constTokens.typeNumber) 
+            {
+                value = tokens[indexValue].value;
+                type = constTokens.typeNumber;
+                end = next(tokens, indexValue);
+            }
+            else
+            {
+                throw constParser.errorType;
+            }
+            break;
+
+        // case "float":
+        //     console.log("FLOAT");
+        //     break;
+        
+        default:
+            throw constParser.errorDeclaration;
+    }
+
+
+    // if(tokens[indexValue].type == constTokens.typeNumber) {
+    //     value = tokens[indexValue].value;
+    //     type = constTokens.typeNumber;
+    //     end = next(tokens, indexValue);
+    // } else if(tokens[indexValue].type == constTokens.symboleQuotationMark) {
+    //     const objectString = helper.searchString(tokens, indexValue);
+    //     value = objectString.value;
+    //     type = constTokens.typeChar;
+    //     end = next(tokens, objectString.end);
+    // } else throw constParser.errorDeclaration;
 
     end = helper.nextNewLine(tokens, next(tokens, end)) + 1;
 
