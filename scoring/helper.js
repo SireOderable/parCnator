@@ -12,27 +12,44 @@ Object.size = function (obj) {
 
 function printAST(ast) {
     console.log("----- AST -----");
-    for (const [key, value] of Object.entries(ast)) {
-        console.log(Object.size(value), value);
-    }
+    console.dir(ast, { depth: null });
     console.log("---------------");
 
 }
 
 //==============================================================================
 // check du nombre de lignes que contient le fichier
-exports.checkLinesInFile = (ast) => {
-    // TODO : recherche sur les fils
-
+exports.checkLinesInFile = (tokens) => {
     const authorizedLineNumber = 200;
 
-    const linesCounter = _.filter(ast, { type: 'newLine' }).length + 1;
+    var linesCounter = _.filter(tokens, { type: 'newLine' }).length + 1;
+
     if (linesCounter > authorizedLineNumber) {
         console.log("checkLinesInFile -> dépassement :", linesCounter - authorizedLineNumber);
-        return 0;
+        return 1;
     }
     console.log("checkLinesInFile -> OK");
-    return 1;
+    return 0;
+}
+
+//==============================================================================
+// check du nombre de lignes que contienent les fonctions
+exports.checkLinesInFuncions = (ast) => {
+    const maxLignesAuthorise = 25;
+
+    for (const [key, value] of Object.entries(ast)) {
+        if (value.type === "declarationFunction") {
+            var linesCounter = _.filter(value.body, { type: 'newLine' }).length - 1;    // -1 pour l'accolade ouvrante
+            if (linesCounter > maxLignesAuthorise) {
+                console.log("checkLinesInFuncions -> dépassement");
+                return 1;
+            }
+        }
+
+    }
+
+    console.log("checkLinesInFuncions -> OK");
+    return 0;
 }
 
 //==============================================================================
@@ -56,8 +73,12 @@ exports.checkNewLineAfterEndInstruct = (ast) => {
         console.log("checkNewLineAfterEndInstruct -> ", cptFalse, " errors");
         return 0;
     }
-    
+
     console.log("checkNewLineAfterEndInstruct -> OK");
+    return 1;
+}
+
+exports.checkBlanks = (tokens) => {
     return 1;
 }
 
@@ -74,9 +95,5 @@ exports.allExpressionFinished = (ast) => {
 }
 
 exports.indentation = (ast) => {
-    return 1;
-}
-
-exports.numberLine = (ast) => {
     return 1;
 }

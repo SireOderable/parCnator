@@ -14,16 +14,20 @@ exports.from = (code) => {
             allUsedIsDeclared: helper.allUsedIsDeclared(ast),
             allExpressionFinished: helper.allExpressionFinished(ast),
             checkLinesInFile: helper.checkLinesInFile(ast),
+            checkLinesInFuncions: helper.checkLinesInFuncions(ast),
             indentation: helper.indentation(ast),
-            checkNewLineAfterEndInstruct: helper.checkNewLineAfterEndInstruct(ast)
+            checkNewLineAfterEndInstruct: helper.checkNewLineAfterEndInstruct(ast),
+            checkBlanks: helper.checkBlanks(tokens)
         };
         return {
             score: result.allDeclaredIsUsed +
                 result.allUsedIsDeclared +
                 result.allExpressionFinished +
                 result.checkLinesInFile +
+                result.checkLinesInFuncions +
                 result.indentation +
-                result.checkNewLineAfterEndInstruct,
+                result.checkNewLineAfterEndInstruct +
+                result.checkBlanks,
             details: result
         }
     } catch (e) {
