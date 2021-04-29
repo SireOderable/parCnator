@@ -7,6 +7,7 @@ function isNumeric(n) {
 }
 
 module.exports = function (code) {
+  code = helper.removeComments(code);
   code = helper.replaceSpecialsChars(code);
 
   if(code.charAt(0) == ' ') code = code.slice(1);

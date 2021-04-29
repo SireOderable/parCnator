@@ -1,19 +1,25 @@
-const constTokens= require("./constants");
+const constTokens = require("./constants");
 
-exports.checkChars= (t)=>{
+exports.checkChars = (t) => {
     for (const charName in constTokens.specialChars) {
-        if(t=='*'+charName+'*'){
+        if (t == '*' + charName + '*') {
             return charName;
         }
     }
     return false;
 }
 
-exports.replaceSpecialsChars= (code)=>{
+exports.replaceSpecialsChars = (code) => {
     for (const charName in constTokens.specialChars) {
         // console.log(charName);
         const element = constTokens.specialChars[charName];
-        code= code.replace(element.regRule, ' *'+charName+'* ');
+        code = code.replace(element.regRule, ' *' + charName + '* ');
     }
     return code;
 }
+
+exports.removeComments = (code) => {
+    code = code.replace(/\/\*[\s\S]*?\*\/|([^\\:]|^)\/\/.*$/gm, '$1');
+    return code;
+}
+
