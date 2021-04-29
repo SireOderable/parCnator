@@ -14,7 +14,16 @@ function printAST(ast) {
     console.log("----- AST -----");
     console.dir(ast, { depth: null });
     console.log("---------------");
+}
 
+function printAST2(ast) {
+    for (const [key, value] of Object.entries(ast)) {
+        console.log("---------------------------------");
+        console.log(value);
+        // if (value.hasOwnProperty("body")){
+        //     printAST2(value.body);
+        // }
+    }
 }
 
 //==============================================================================
@@ -57,7 +66,7 @@ exports.checkLinesInFuncions = (ast) => {
 exports.checkNewLineAfterEndInstruct = (tokens) => {
     // TODO : exclure 'for (var i=0; i<10; i++){'
     var cptFalse = 0;
-    
+
     for (var i = 0; i < tokens.length - 1; i++) {
         if (tokens[i].type === "endInstruct") {
             if (tokens[i + 1].type !== "newLine") {
@@ -68,40 +77,115 @@ exports.checkNewLineAfterEndInstruct = (tokens) => {
 
     if (cptFalse > 0) {
         console.log("checkNewLineAfterEndInstruct -> ", cptFalse, " errors");
-        return 0;
+        return 1;
     }
 
     console.log("checkNewLineAfterEndInstruct -> OK");
-    return 1;
+    return 0;
 }
 
+//==============================================================================
+// check que toute variable dédclarée est utilisée
+exports.checkCommas = (tokens) => {
+    var cptErr = 0;
 
-exports.checkBlanks = (tokens) => {
-    return 1;
+    for (var i = 0; i < tokens.length - 1; i++) {
+        if (tokens[i].type === "blank") {
+            if (tokens[i + 1].type === "virgule") {
+                cptErr++;
+            }
+        }
+        else if (tokens[i].type === "virgule") {
+            if (tokens[i + 1].type !== "blank") {
+                cptErr++;
+            }
+        }
+    }
+
+    if (cptErr > 0) {
+        console.log("checkCommas -> ", cptErr, " errors");
+        return 1;
+    }
+
+    console.log("checkCommas -> OK");
+    return 0;
 }
 
+//==============================================================================
+// check que toute variable dédclarée est utilisée
 exports.allDeclaredIsUsed = (ast) => {
-    return 1;
+    return 0;
 }
 
-exports.allUsedIsDeclared = (ast) => {
-    return 1;
+//==============================================================================
+// check que toute variable utilisée est dédclarée
+exports.allUsedIsDeclared = (ast, tabUsed = []) => {
+    return 0;
 }
 
-exports.allExpressionFinished = (ast) => {
-    return 1;
+
+//==============================================================================
+// check si `( [ { "` sont par paires et dans le bon ordre (ex: [{]} = Error)
+exports.allExpressionFinished = (tokens) => {
+    const pair = {
+        'openParenthese': 'closeParenthese',
+        'closeParenthese': 'openParenthese',
+
+        'openHook': 'closeHook',
+        'closeHook': 'openHook',
+
+        'openBrackets': 'closeBrackets',
+        'closeBrackets': 'openBrackets',
+
+        'quotationMark':'quotationMark'
+    }
+    const search = [
+        'openParenthese', 'closeParenthese',
+        'openHook', 'closeHook',
+        'openBrackets', 'closeBrackets',
+        'quotationMark'
+    ]
+    const tmp = []
+
+    for (var i = 0; i < tokens.length - 1; i++) {
+        if (search.includes(tokens[i].type)) {
+            tmp.push(tokens[i].type);
+        }
+    }
+
+    const len = tmp.length/2 +1;
+    for (var j = 0; j < len; j++) {
+        for (var i = 0; i < tmp.length - 1; i++) {
+            if (tmp[i] == pair[tmp[i + 1]]) {
+                tmp.splice(i, 2);                
+                break;
+            }
+        }
+    }
+    
+    if (tmp.length > 0) {
+        console.log("allExpressionFinished -> Err");
+        return 1;
+    }
+
+    console.log("allExpressionFinished -> OK");
+    return 0;
 }
+
+
 
 const tabline = 4;
-exports.indentation = (ast, proff=0) => {
+exports.indentation = (ast, proff = 0) => {
     let score = 0;
     for (let i = 0; i < ast.length; i++) {
         const token = ast[i];
-        if(token.type == "declarationFunction") {
-            score = this.indentation(ast[i].body ,proff+1)
+        if (token.type == "declarationFunction") {
+            score = this.indentation(ast[i].body, proff + 1)
         } else {
 
         }
     }
-    return score;
+    // return score;
+
+    return 0;
 }
