@@ -6,8 +6,11 @@ exports.expressionDeclaration="declaration";
 exports.expressionDeclarationFunction="declarationFunction";
 exports.expressionDeclarationVariable="declarationVariable";
 exports.expressionAffectation="variableAffectation";
-exports.expressionFunctionCall="functionCall";
 exports.expressionImport="import";
+
+
+exports.expressionFunctionCall="functionCall";
+exports.expressionVariableCall="variableCall";
 
 exports.declarationVariable =["integer","float", "char"];
 
