@@ -16,7 +16,7 @@ const searchString= (tokens, start)=>{
     }
     if(!findend) throw constParser.errorMissingQuotationMark;
     return {
-        value: string.join(' '),
+        value: string.filter(c => c != undefined).join(" "),
         end: end
     };
 }
@@ -51,6 +51,7 @@ exports.searchArgs= (tokens, start)=>{
 }
 
 exports.skipBlank = (tokens, start, step) => {
+    if(tokens[start + step] == undefined) return start;
     if(tokens[start].type == constTokens.symboleBlank) {
         return this.skipBlank(tokens, start + step, step);
     }
@@ -73,4 +74,37 @@ exports.nextNewLine = (tokens, start) => {
         i++;
     }
     return i;
+}
+
+exports.next = (tokens, start) => {
+    return this.skipBlank(tokens, start + 1, 1)
+}
+
+exports.getArgs = (tokens, openPar) => {
+    let args = [];
+    let nextArg = this.next(tokens, openPar);
+
+    if (tokens[nextArg].type == constTokens.symboleCloseParenthese) return { args: args, end: nextArg };
+
+    while (tokens[nextArg].type != constTokens.symboleCloseParenthese) {
+        const typeArg = tokens[nextArg].value;
+        const match = typeArg.match(/(\b(char[*]*)|\b(int)\b|\bfloat\b)/gi);
+        if (match != null && match.length > 0) {
+            const indexName = this.next(tokens, nextArg);
+            const separator = this.next(tokens, indexName);
+            if (tokens[separator].type != constTokens.symboleVirgule) {
+                args.push(tokens.slice(nextArg, separator));
+                break;
+            }
+
+            args.push(tokens.slice(nextArg, separator));
+            nextArg = this.next(tokens, separator);
+
+        } else throw constParser.errorDeclaration;
+    }
+
+    return {
+        args: args,
+        end: this.next(tokens, this.next(tokens, this.next(tokens, nextArg)))
+    };
 }

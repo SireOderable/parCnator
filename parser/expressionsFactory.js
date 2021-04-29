@@ -46,42 +46,13 @@ function callFunction(tokens, start) {
     return {
         type: constParser.expressionFunctionCall,
         name: callTo,
-        body: tokens.slice(helper.getIndent(tokens, start), end),
-        end: end
+        body: tokens.slice(start, end),
+        end: end - 1
     };
 }
 
 function callVariable(tokens, start) {
-    return { toot: "toto" };
-}
-
-function getArgs(tokens, openPar) {
-    let args = [];
-    let nextArg = next(tokens, openPar);
-
-    if (tokens[nextArg].type == constTokens.symboleCloseParenthese) return { args: args, end: nextArg };
-
-    while (tokens[nextArg].type != constTokens.symboleCloseParenthese) {
-        const typeArg = tokens[nextArg].value;
-        const match = typeArg.match(/(\b(char[*]*)|\b(int)\b|\bfloat\b)/gi);
-        if (match != null && match.length > 0) {
-            const indexName = next(tokens, nextArg);
-            const separator = next(tokens, indexName);
-            if (tokens[separator].type != constTokens.symboleVirgule) {
-                args.push(tokens.slice(nextArg, separator));
-                break;
-            }
-
-            args.push(tokens.slice(nextArg, separator));
-            nextArg = next(tokens, separator);
-
-        } else throw constParser.errorDeclaration;
-    }
-
-    return {
-        args: args,
-        end: next(tokens, next(tokens, next(tokens, nextArg)))
-    };
+    return {};
 }
 
 function declarationFunction(tokens, start) {
@@ -89,17 +60,17 @@ function declarationFunction(tokens, start) {
     const nextType = next(tokens, start);
     const nameFunc = next(tokens, start);
     const openPar = next(tokens, nameFunc);
-    const args = getArgs(tokens, openPar);
-
+    const args = helper.getArgs(tokens, openPar);
+    const return_type = tokens.slice(indent, nextType);
     const closeBracket = tokens.findIndex(element => element.type == constTokens.symboleCloseBrackets);
-
     return {
         type: constParser.expressionDeclarationFunction,
         header: {
-            return_type: tokens.slice(indent, nextType),
+            return_type: return_type,
             name: tokens.slice(nextType, openPar),
             arguments: args.args,
         },
+        explicite_return: return_type.filter(token => token.type == constTokens.typeWord)[0].value,
         body: [],
         start: args.end,
         end: next(tokens, closeBracket)
@@ -114,69 +85,38 @@ function declarationVariable(tokens, start) {
     let type = null;
     let end = null;
 
-
     const match = tokens[start].value.match(/(\b(char\*)|\b(int)\b|\bfloat\b)/gi);
-    if(match == null)
-    {
+    if (match == null) {
         throw constParser.errorDeclaration;
     }
-    
-    switch (match[0])
-    {
+
+    switch (match[0]) {
         case "char*":
-            if(tokens[indexValue].type == constTokens.symboleQuotationMark) {
+            if (tokens[indexValue].type == constTokens.symboleQuotationMark) {
                 const objectString = helper.searchString(tokens, indexValue);
+                
                 value = objectString.value;
                 type = constTokens.typeChar;
                 end = next(tokens, objectString.end);
-            }
-            else 
-            {
-                throw constParser.errorMissingQuotationMark;    
-            }
+            } else throw constParser.errorMissingQuotationMark;
+            
             break;
-        
         case "int":
-            console.log("INT");
-            if(tokens[indexValue].type == constTokens.typeNumber) 
-            {
+            if (tokens[indexValue].type == constTokens.typeNumber) {
                 value = tokens[indexValue].value;
                 type = constTokens.typeNumber;
                 end = next(tokens, indexValue);
-            }
-            else
-            {
-                throw constParser.errorType;
-            }
+            } else throw constParser.errorType;
             break;
-
-        // case "float":
-        //     console.log("FLOAT");
-        //     break;
-        
         default:
             throw constParser.errorDeclaration;
     }
-
-
-    // if(tokens[indexValue].type == constTokens.typeNumber) {
-    //     value = tokens[indexValue].value;
-    //     type = constTokens.typeNumber;
-    //     end = next(tokens, indexValue);
-    // } else if(tokens[indexValue].type == constTokens.symboleQuotationMark) {
-    //     const objectString = helper.searchString(tokens, indexValue);
-    //     value = objectString.value;
-    //     type = constTokens.typeChar;
-    //     end = next(tokens, objectString.end);
-    // } else throw constParser.errorDeclaration;
-
     end = helper.nextNewLine(tokens, next(tokens, end)) + 1;
-
     return {
         type: constParser.expressionDeclarationVariable,
         typeVariable: type,
         value: value,
         body: tokens.slice(start, end),
-        end: end
+        end: end - 1
     };
 }

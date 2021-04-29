@@ -1,15 +1,15 @@
-const tokenizer= require("../tokenizer/tokenizer");
-const parser= require("../parser/parser");
-const helper= require("./helper");
+const tokenizer = require("../tokenizer/tokenizer");
+const parser = require("../parser/parser");
+const helper = require("./helper");
 
-exports.from= (code)=>{
+exports.from = (code) => {
 
     let tokens = tokenizer(code);
 
-    try{
-        let ast= parser(tokens);
+    try {
+        let ast = parser(tokens);
         console.dir(ast, { depth: null });
-        let result= {
+        let result = {
             allDeclaredIsUsed: helper.allDeclaredIsUsed(ast),
             allUsedIsDeclared: helper.allUsedIsDeclared(ast),
             allExpressionFinished: helper.allExpressionFinished(ast),
@@ -17,15 +17,16 @@ exports.from= (code)=>{
             indentation: helper.indentation(ast),
             checkNewLineAfterEndInstruct: helper.checkNewLineAfterEndInstruct(ast)
         };
-        return {score: result.allDeclaredIsUsed+
-                       result.allUsedIsDeclared+
-                       result.allExpressionFinished+
-                       result.checkLinesInFile+
-                       result.indentation+
-                       result.checkNewLineAfterEndInstruct,
-                details: result
-                }
-    }catch(e){
+        return {
+            score: result.allDeclaredIsUsed +
+                result.allUsedIsDeclared +
+                result.allExpressionFinished +
+                result.checkLinesInFile +
+                result.indentation +
+                result.checkNewLineAfterEndInstruct,
+            details: result
+        }
+    } catch (e) {
         throw e;
     }
 };
