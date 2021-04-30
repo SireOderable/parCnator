@@ -8,22 +8,6 @@ Object.size = function (obj) {
         if (obj.hasOwnProperty(key)) size++;
     }
     return size;
-};
-
-function printAST(ast) {
-    console.log("----- AST -----");
-    console.dir(ast, { depth: null });
-    console.log("---------------");
-}
-
-function printAST2(ast) {
-    for (const [key, value] of Object.entries(ast)) {
-        console.log("---------------------------------");
-        console.log(value);
-        // if (value.hasOwnProperty("body")){
-        //     printAST2(value.body);
-        // }
-    }
 }
 
 //==============================================================================
@@ -35,7 +19,7 @@ exports.checkLinesInFile = (tokens) => {
 
     if (linesCounter > authorizedLineNumber) {
         console.log("checkLinesInFile -> dépassement :", linesCounter - authorizedLineNumber);
-        return 1;
+        return -1;
     }
     console.log("checkLinesInFile -> OK");
     return 0;
@@ -51,7 +35,7 @@ exports.checkLinesInFuncions = (ast) => {
             var linesCounter = _.filter(value.body, { type: 'newLine' }).length - 1;    // -1 pour l'accolade ouvrante
             if (linesCounter > maxLignesAuthorise) {
                 console.log("checkLinesInFuncions -> Err");
-                return 1;
+                return -1;
             }
         }
 
@@ -77,7 +61,7 @@ exports.checkNewLineAfterEndInstruct = (tokens) => {
 
     if (cptFalse > 0) {
         console.log("checkNewLineAfterEndInstruct -> ", cptFalse, " errors");
-        return 1;
+        return -1;
     }
 
     console.log("checkNewLineAfterEndInstruct -> OK");
@@ -104,7 +88,7 @@ exports.checkCommas = (tokens) => {
 
     if (cptErr > 0) {
         console.log("checkCommas -> ", cptErr, " errors");
-        return 1;
+        return -1;
     }
 
     console.log("checkCommas -> OK");
@@ -165,7 +149,7 @@ exports.allExpressionFinished = (tokens) => {
     
     if (tmp.length > 0) {
         console.log("allExpressionFinished -> Err");
-        return 1;
+        return -1;
     }
 
     console.log("allExpressionFinished -> OK");

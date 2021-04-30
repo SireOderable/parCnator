@@ -10,22 +10,23 @@ exports.from = (code) => {
         let ast = parser(tokens);
         // console.dir(ast, { depth: null });
         let result = {
-            allDeclaredIsUsed: helper.allDeclaredIsUsed(ast),
-            allUsedIsDeclared: helper.allUsedIsDeclared(ast),
+            // allDeclaredIsUsed: helper.allDeclaredIsUsed(ast),
+            // allUsedIsDeclared: helper.allUsedIsDeclared(ast),
             allExpressionFinished: helper.allExpressionFinished(tokens),
             checkLinesInFile: helper.checkLinesInFile(ast),
             checkLinesInFuncions: helper.checkLinesInFuncions(ast),
-            indentation: helper.indentation(ast),
+            // indentation: helper.indentation(ast),
             checkNewLineAfterEndInstruct: helper.checkNewLineAfterEndInstruct(tokens),
             checkCommas: helper.checkCommas(tokens)
         };
         return {
-            score: result.allDeclaredIsUsed +
-                result.allUsedIsDeclared +
+            score: 
+                // result.allDeclaredIsUsed +
+                // result.allUsedIsDeclared +
                 result.allExpressionFinished +
                 result.checkLinesInFile +
                 result.checkLinesInFuncions +
-                result.indentation +
+                // result.indentation +
                 result.checkNewLineAfterEndInstruct +
                 result.checkCommas,
             details: result
