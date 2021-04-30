@@ -5,10 +5,10 @@ const helper = require("./helper");
 exports.from = (code) => {
 
     let tokens = tokenizer(code);
-
+    console.log({tokens});
     try {
         let ast = parser(tokens);
-        // console.dir(ast, { depth: null });
+        console.dir({ast}, { depth: null });
         let result = {
             // allDeclaredIsUsed: helper.allDeclaredIsUsed(ast),
             // allUsedIsDeclared: helper.allUsedIsDeclared(ast),
